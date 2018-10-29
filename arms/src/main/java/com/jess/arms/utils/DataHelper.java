@@ -41,9 +41,163 @@ public class DataHelper {
     private static SharedPreferences mSharedPreferences;
     public static final String SP_NAME = "config";
 
+    private static Context context;
+
+    public static void init(Context context){
+        DataHelper.context = context;
+    }
+
+
+
+
 
     private DataHelper() {
         throw new IllegalStateException("you can't instantiate me!");
+    }
+
+    /**
+     * 存储重要信息到sharedPreferences；
+     *
+     * @param key
+     * @param value
+     */
+    public static void setStringSF( String key, String value) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().putString(key, value).apply();
+    }
+
+    /**
+     * 返回存在sharedPreferences的信息
+     *
+     * @param key
+     * @return
+     */
+    public static String getStringSF( String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPreferences.getString(key, null);
+    }
+
+    /**
+     * 存储重要信息到sharedPreferences；
+     *
+     * @param key
+     * @param value
+     */
+    public static void setIntergerSF( String key, int value) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().putInt(key, value).apply();
+    }
+
+    /**
+     * 返回存在sharedPreferences的信息
+     *
+     * @param key
+     * @return
+     */
+    public static int getIntergerSF( String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        return mSharedPreferences.getInt(key, -1);
+    }
+
+    /**
+     * 清除某个内容
+     */
+    public static void removeSF( String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().remove(key).apply();
+    }
+
+    /**
+     * 清除Shareprefrence
+     */
+    public static void clearShareprefrence() {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        mSharedPreferences.edit().clear().apply();
+    }
+
+    /**
+     * 将对象储存到sharepreference
+     *
+     * @param key
+     * @param device
+     * @param <T>
+     */
+    public static <T> boolean saveDeviceData(String key, T device) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try {   //Device为自定义类
+            // 创建对象输出流，并封装字节流
+            ObjectOutputStream oos = new ObjectOutputStream(baos);
+            // 将对象写入字节流
+            oos.writeObject(device);
+            // 将字节流编码成base64的字符串
+            String oAuth_Base64 = new String(Base64.encode(baos
+                    .toByteArray(), Base64.DEFAULT));
+            mSharedPreferences.edit().putString(key, oAuth_Base64).apply();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * 将对象从shareprerence中取出来
+     *
+     * @param key
+     * @param <T>
+     * @return
+     */
+    public static <T> T getDeviceData( String key) {
+        if (mSharedPreferences == null) {
+            mSharedPreferences = context.getSharedPreferences(SP_NAME, Context.MODE_PRIVATE);
+        }
+        T device = null;
+        String productBase64 = mSharedPreferences.getString(key, null);
+
+        if (productBase64 == null) {
+            return null;
+        }
+        // 读取字节
+        byte[] base64 = Base64.decode(productBase64.getBytes(), Base64.DEFAULT);
+
+        // 封装到字节流
+        ByteArrayInputStream bais = new ByteArrayInputStream(base64);
+        try {
+            // 再次封装
+            ObjectInputStream bis = new ObjectInputStream(bais);
+
+            // 读取对象
+            device = (T) bis.readObject();
+
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return device;
+    }
+    /**
+     * 获取自定义缓存文件地址
+     *
+     * @return
+     */
+    public static String getCacheFilePath() {
+        String packageName = context.getPackageName();
+        return "/mnt/sdcard/" + packageName;
     }
 
     /**

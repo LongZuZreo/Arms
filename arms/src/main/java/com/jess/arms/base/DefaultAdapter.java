@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,6 +36,11 @@ public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<
     protected List<T> mInfos;
     protected OnRecyclerViewItemClickListener mOnItemClickListener = null;
     private BaseHolder<T> mHolder;
+
+    public DefaultAdapter(){
+        super();
+        mInfos = new ArrayList<>();
+    }
 
     public DefaultAdapter(List<T> infos) {
         super();

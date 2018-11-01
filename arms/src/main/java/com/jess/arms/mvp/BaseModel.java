@@ -48,7 +48,7 @@ public class BaseModel implements IModel, LifecycleObserver {
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    void onDestroy(LifecycleOwner owner) {
+    public void onDestroy(LifecycleOwner owner) {
         owner.getLifecycle().removeObserver(this);
     }
 }

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.AttributeSet;
 import android.view.View;
@@ -59,6 +60,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
     @Inject
     @Nullable
     protected P mPresenter;//如果当前页面逻辑简单, Presenter 可以为 null
+    protected BaseActivity<P> mContext = this;
 
     @NonNull
     @Override
@@ -107,6 +109,7 @@ public abstract class BaseActivity<P extends IPresenter> extends AppCompatActivi
         if (mPresenter != null)
             mPresenter.onDestroy();//释放资源
         this.mPresenter = null;
+        this.mContext = null;
     }
 
     /**

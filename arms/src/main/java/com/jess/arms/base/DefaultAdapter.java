@@ -145,7 +145,7 @@ public abstract class DefaultAdapter<T> extends RecyclerView.Adapter<BaseHolder<
         void onItemClick(View view, int viewType, T data, int position);
     }
 
-    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener) {
+    public void setOnItemClickListener(OnRecyclerViewItemClickListener<T> listener) {
         this.mOnItemClickListener = listener;
     }
 }
